@@ -29,13 +29,21 @@ func (s *ComputeServer) TriggerFunction(ctx context.Context, req *connect.Reques
 	return connect.NewResponse(&computev1.TriggerFunctionResponse{Result: result}), nil
 }
 
+func (s *ComputeServer) CheckHealth(ctx context.Context, req *connect.Request[computev1.CheckHealthRequest]) (*connect.Response[computev1.CheckHealthResponse], error) {
+	slog.Info("CheckHealth", "name", req.Msg.ServiceName)
+	return connect.NewResponse(&computev1.CheckHealthResponse{
+		Status:  computev1.CheckHealthResponse_HEALTHY,
+		Message: "Service is operational",
+	}), nil
+}
+
 func main() {
 	server := &ComputeServer{}
 	mux := http.NewServeMux()
 	path, handler := computev1connect.NewComputeServiceHandler(server)
 	mux.Handle(path, handler)
 
-	port := "8095" // From genesis.json
+	port := "8095"
 	slog.Info("ComputeManager starting", "port", port)
 
 	srv := &http.Server{

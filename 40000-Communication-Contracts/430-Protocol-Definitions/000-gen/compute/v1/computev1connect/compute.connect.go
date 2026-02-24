@@ -39,12 +39,16 @@ const (
 	// ComputeServiceTriggerFunctionProcedure is the fully-qualified name of the ComputeService's
 	// TriggerFunction RPC.
 	ComputeServiceTriggerFunctionProcedure = "/compute.v1.ComputeService/TriggerFunction"
+	// ComputeServiceCheckHealthProcedure is the fully-qualified name of the ComputeService's
+	// CheckHealth RPC.
+	ComputeServiceCheckHealthProcedure = "/compute.v1.ComputeService/CheckHealth"
 )
 
 // ComputeServiceClient is a client for the compute.v1.ComputeService service.
 type ComputeServiceClient interface {
 	RunService(context.Context, *connect.Request[v1.RunServiceRequest]) (*connect.Response[v1.RunServiceResponse], error)
 	TriggerFunction(context.Context, *connect.Request[v1.TriggerFunctionRequest]) (*connect.Response[v1.TriggerFunctionResponse], error)
+	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
 }
 
 // NewComputeServiceClient constructs a client for the compute.v1.ComputeService service. By
@@ -70,6 +74,12 @@ func NewComputeServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(computeServiceMethods.ByName("TriggerFunction")),
 			connect.WithClientOptions(opts...),
 		),
+		checkHealth: connect.NewClient[v1.CheckHealthRequest, v1.CheckHealthResponse](
+			httpClient,
+			baseURL+ComputeServiceCheckHealthProcedure,
+			connect.WithSchema(computeServiceMethods.ByName("CheckHealth")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -77,6 +87,7 @@ func NewComputeServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type computeServiceClient struct {
 	runService      *connect.Client[v1.RunServiceRequest, v1.RunServiceResponse]
 	triggerFunction *connect.Client[v1.TriggerFunctionRequest, v1.TriggerFunctionResponse]
+	checkHealth     *connect.Client[v1.CheckHealthRequest, v1.CheckHealthResponse]
 }
 
 // RunService calls compute.v1.ComputeService.RunService.
@@ -89,10 +100,16 @@ func (c *computeServiceClient) TriggerFunction(ctx context.Context, req *connect
 	return c.triggerFunction.CallUnary(ctx, req)
 }
 
+// CheckHealth calls compute.v1.ComputeService.CheckHealth.
+func (c *computeServiceClient) CheckHealth(ctx context.Context, req *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
+	return c.checkHealth.CallUnary(ctx, req)
+}
+
 // ComputeServiceHandler is an implementation of the compute.v1.ComputeService service.
 type ComputeServiceHandler interface {
 	RunService(context.Context, *connect.Request[v1.RunServiceRequest]) (*connect.Response[v1.RunServiceResponse], error)
 	TriggerFunction(context.Context, *connect.Request[v1.TriggerFunctionRequest]) (*connect.Response[v1.TriggerFunctionResponse], error)
+	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
 }
 
 // NewComputeServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -114,12 +131,20 @@ func NewComputeServiceHandler(svc ComputeServiceHandler, opts ...connect.Handler
 		connect.WithSchema(computeServiceMethods.ByName("TriggerFunction")),
 		connect.WithHandlerOptions(opts...),
 	)
+	computeServiceCheckHealthHandler := connect.NewUnaryHandler(
+		ComputeServiceCheckHealthProcedure,
+		svc.CheckHealth,
+		connect.WithSchema(computeServiceMethods.ByName("CheckHealth")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/compute.v1.ComputeService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ComputeServiceRunServiceProcedure:
 			computeServiceRunServiceHandler.ServeHTTP(w, r)
 		case ComputeServiceTriggerFunctionProcedure:
 			computeServiceTriggerFunctionHandler.ServeHTTP(w, r)
+		case ComputeServiceCheckHealthProcedure:
+			computeServiceCheckHealthHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -135,4 +160,8 @@ func (UnimplementedComputeServiceHandler) RunService(context.Context, *connect.R
 
 func (UnimplementedComputeServiceHandler) TriggerFunction(context.Context, *connect.Request[v1.TriggerFunctionRequest]) (*connect.Response[v1.TriggerFunctionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("compute.v1.ComputeService.TriggerFunction is not implemented"))
+}
+
+func (UnimplementedComputeServiceHandler) CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("compute.v1.ComputeService.CheckHealth is not implemented"))
 }
