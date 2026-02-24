@@ -1,47 +1,29 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
 
-	computev1 "OlympusGCP-Compute/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/compute/v1"
-	"OlympusGCP-Compute/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/compute/v1/computev1connect"
+	"OlympusGCP-Compute/gen/v1/compute/computev1connect"
+	"OlympusGCP-Compute/10000-Autonomous-Actors/10700-Processing-Engines/10710-Reasoning-Inference/inference"
 
-	"connectrpc.com/connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
 
-type ComputeServer struct{}
-
-func (s *ComputeServer) RunService(ctx context.Context, req *connect.Request[computev1.RunServiceRequest]) (*connect.Response[computev1.RunServiceResponse], error) {
-	slog.Info("RunService", "name", req.Msg.ServiceName, "image", req.Msg.Image)
-	endpoint := fmt.Sprintf("http://localhost:8080/services/%s", req.Msg.ServiceName)
-	return connect.NewResponse(&computev1.RunServiceResponse{EndpointUrl: endpoint}), nil
-}
-
-func (s *ComputeServer) TriggerFunction(ctx context.Context, req *connect.Request[computev1.TriggerFunctionRequest]) (*connect.Response[computev1.TriggerFunctionResponse], error) {
-	slog.Info("TriggerFunction", "name", req.Msg.FunctionName)
-	result := fmt.Sprintf("Function %s executed successfully.", req.Msg.FunctionName)
-	return connect.NewResponse(&computev1.TriggerFunctionResponse{Result: result}), nil
-}
-
-func (s *ComputeServer) CheckHealth(ctx context.Context, req *connect.Request[computev1.CheckHealthRequest]) (*connect.Response[computev1.CheckHealthResponse], error) {
-	slog.Info("CheckHealth", "name", req.Msg.ServiceName)
-	return connect.NewResponse(&computev1.CheckHealthResponse{
-		Status:  computev1.CheckHealthResponse_HEALTHY,
-		Message: "Service is operational",
-	}), nil
-}
-
 func main() {
-	server := &ComputeServer{}
+	server := &inference.ComputeServer{}
 	mux := http.NewServeMux()
 	path, handler := computev1connect.NewComputeServiceHandler(server)
 	mux.Handle(path, handler)
+
+	// Health Check / Pulse
+	mux.HandleFunc("/pulse", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"status":"HEALTHY", "workspace":"OlympusGCP-Compute", "time":"%s"}`, time.Now().Format(time.RFC3339))
+	})
 
 	port := "8095"
 	slog.Info("ComputeManager starting", "port", port)

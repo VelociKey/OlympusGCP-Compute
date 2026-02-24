@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package compute.v1;
 
-option go_package = "OlympusGCP-Compute/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/compute/v1;computev1";
+option go_package = "OlympusGCP-Compute/gen/v1/compute;computev1";
 
 service ComputeService {
   rpc RunService (RunServiceRequest) returns (RunServiceResponse);

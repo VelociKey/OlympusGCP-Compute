@@ -4,12 +4,13 @@ import (
 	"context"
 	"testing"
 
-	computev1 "OlympusGCP-Compute/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/compute/v1"
+	computev1 "OlympusGCP-Compute/gen/v1/compute"
+	"OlympusGCP-Compute/10000-Autonomous-Actors/10700-Processing-Engines/10710-Reasoning-Inference/inference"
 	"connectrpc.com/connect"
 )
 
 func TestComputeServerAdvanced(t *testing.T) {
-	server := &ComputeServer{}
+	server := &inference.ComputeServer{}
 	ctx := context.Background()
 
 	// Test CheckHealth
