@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"OlympusGCP-Compute/gen/v1/compute/computev1connect"
@@ -33,8 +37,19 @@ func main() {
 		Handler:           h2c.NewHandler(mux, &http2.Server{}),
 		ReadHeaderTimeout: 3 * time.Second,
 	}
-	err := srv.ListenAndServe()
-	if err != nil {
-		slog.Error("Server failed", "error", err)
-	}
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			slog.Error("Server failed", "error", err)
+		}
+	}()
+
+	<-done
+	slog.Info("ComputeManager shutting down...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	srv.Shutdown(ctx)
 }
