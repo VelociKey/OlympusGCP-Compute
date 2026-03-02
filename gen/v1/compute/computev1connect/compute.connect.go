@@ -6,7 +6,7 @@ package computev1connect
 
 import (
 	compute "OlympusGCP-Compute/gen/v1/compute"
-	connect "olympus.fleet/ext/connectrpc/connect"
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
 	http "net/http"

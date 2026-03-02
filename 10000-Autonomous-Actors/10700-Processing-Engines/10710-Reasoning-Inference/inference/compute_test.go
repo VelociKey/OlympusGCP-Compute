@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	computev1 "OlympusGCP-Compute/gen/v1/compute"
-	"olympus.fleet/ext/connectrpc/connect"
+	"connectrpc.com/connect"
 )
 
 func TestComputeServer_CoverageExpansion(t *testing.T) {
