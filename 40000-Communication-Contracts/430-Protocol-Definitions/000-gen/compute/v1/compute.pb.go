@@ -7,8 +7,8 @@
 package computev1
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "olympus.fleet/00SDLC/Olympus2/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/google/protobuf"
+	protoimpl "olympus.fleet/00SDLC/Olympus2/40000-Communication-Contracts/430-Protocol-Definitions/000-gen/google/protobuf"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"

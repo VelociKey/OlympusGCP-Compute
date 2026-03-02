@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	computev1 "OlympusGCP-Compute/gen/v1/compute"
-	"connectrpc.com/connect"
+	"olympus.fleet/ext/connectrpc/connect"
 )
 
 type ComputeServer struct{}
