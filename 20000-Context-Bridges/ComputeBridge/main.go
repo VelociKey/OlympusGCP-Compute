@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
-	"mcp-go/mcp"
+	"github.com/mark3labs/mcp-go/mcp"
 
-	"OlympusGCP-Compute/gen/v1/compute/computev1connect"
-	computev1 "OlympusGCP-Compute/gen/v1/compute"
-	"Olympus2/90000-Enablement-Labs/P0000-pkg/000-mcp-bridge"
+	"olympus.fleet/00SDLC/OlympusGCP-Compute/gen/v1/compute/computev1connect"
+	computev1 "olympus.fleet/00SDLC/OlympusGCP-Compute/gen/v1/compute"
+	"olympus.fleet/00SDLC/Olympus2/90000-Enablement-Labs/P0900-Labs/140-MCPBridge"
 )
 
 func main() {

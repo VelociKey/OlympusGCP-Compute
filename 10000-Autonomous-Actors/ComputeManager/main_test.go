@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	computev1 "OlympusGCP-Compute/gen/v1/compute"
-	"OlympusGCP-Compute/10000-Autonomous-Actors/10700-Processing-Engines/10710-Reasoning-Inference/inference"
+	computev1 "olympus.fleet/00SDLC/OlympusGCP-Compute/gen/v1/compute"
+	"olympus.fleet/00SDLC/OlympusGCP-Compute/10000-Autonomous-Actors/10700-Processing-Engines/10710-Reasoning-Inference/inference"
 	"connectrpc.com/connect"
 )
 

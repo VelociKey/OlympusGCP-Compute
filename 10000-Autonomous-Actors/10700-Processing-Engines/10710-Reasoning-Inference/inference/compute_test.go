@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	computev1 "OlympusGCP-Compute/gen/v1/compute"
+	computev1 "olympus.fleet/00SDLC/OlympusGCP-Compute/gen/v1/compute"
 	"connectrpc.com/connect"
 )
 
