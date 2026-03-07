@@ -5,11 +5,7 @@
 package computev1connect
 
 import (
-<<<<<<< HEAD:40000-Communication-Contracts/40400-Protocol-Synthetics/connect-rpc/gen/v1/compute/computev1connect/compute.connect.go
 	compute "olympus.fleet/00SDLC/OlympusGCP-Compute/40000-Communication-Contracts/40400-Protocol-Synthetics/connect-rpc/gen/v1/compute"
-=======
-	compute "OlympusGCP-Compute/gen/v1/compute"
->>>>>>> origin/development:gen/v1/compute/computev1connect/compute.connect.go
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
